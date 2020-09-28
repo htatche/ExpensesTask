@@ -15,6 +15,18 @@ RSpec.describe ExpensesController do
     end
   end
 
+  describe 'GET #show' do
+    let!(:expense1) { Expense.create(account: account, amount: 100, date: Date.today, description: 'desc') }
+
+    it 'returns the expenses' do
+      get :show, params: { id: expense1.id }
+
+      body = JSON.parse(response.body)
+
+      expect(body).to eq(expense1.as_json)
+    end
+  end
+
   describe 'POST #create' do
     it 'returns the created expense' do
       post :create, params: expense_params

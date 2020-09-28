@@ -14,6 +14,18 @@ RSpec.describe AccountsController do
     end
   end
 
+  describe 'GET #show' do
+    let(:account1) { Account.create(name: 'account1', number: 1234) }
+
+    it 'returns the accounts' do
+      get :show, params: { id: account1.id }
+
+      body = JSON.parse(response.body)
+
+      expect(body).to eq(account1.as_json)
+    end
+  end
+
   describe 'POST #create' do
     it 'returns the created account' do
       post :create, params: account_params
