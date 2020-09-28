@@ -23,7 +23,9 @@ class AccountsController < ApplicationController
   def destroy
     account = Account.find(params[:id])
 
-    head :ok if account.destroy!
+    account.destroy!
+
+    head :no_content
   end
 
   private

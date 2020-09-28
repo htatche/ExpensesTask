@@ -40,7 +40,11 @@ class ExpensesController < ApplicationController
 
     account = expense.account
 
-    account.update_balance if expense.destroy
+    expense.destroy!
+
+    account.update_balance
+
+    head :no_content
   end
 
   private
