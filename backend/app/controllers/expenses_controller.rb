@@ -1,3 +1,5 @@
+require 'save_expense'
+
 class ExpensesController < ApplicationController
   rescue_from ActiveRecord::RecordInvalid do |error|
     expense = error.record
@@ -10,28 +12,40 @@ class ExpensesController < ApplicationController
 
   def show
     expense = Expense.find(params[:id])
+
     render json: expense
   end
 
   def create
-    expense = Expense.create!(expense_params)
+    expense = Expense.new(expense_params)
+
+    SaveExpense.call(expense)
+
     render json: expense
   end
 
   def update
     expense = Expense.find(params[:id])
-    expense.update!(expense_params)
+    current_account = expense.account
+
+    expense.assign_attributes(expense_params)
+
+    SaveExpense.call(expense, current_account)
+
     render json: expense
   end
 
   def destroy
     expense = Expense.find(params[:id])
-    expense.destroy
+
+    account = expense.account
+
+    account.update_balance if expense.destroy
   end
 
   private
 
   def expense_params
-    params.permit(:amount, :date, :description)
+    params.require(:expense).permit(:amount, :date, :description, :account_id)
   end
 end
