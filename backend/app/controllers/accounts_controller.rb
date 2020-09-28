@@ -8,6 +8,12 @@ class AccountsController < ApplicationController
     render json: Account.order(number: :asc)
   end
 
+  def show
+    account = Account.find(params[:id])
+
+    render json: account
+  end
+
   def create
     account = Account.new(account_params)
 
