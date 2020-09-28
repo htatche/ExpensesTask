@@ -9,6 +9,9 @@ import { useNotifications } from "./Notifications";
 
 function ExpenseForm({ expense, onSave, disabled, onDelete }) {
   const [changes, setChanges] = useState({});
+  const [accounts, setAccounts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { notifyError } = useNotifications();
 
   function changeField(field, value) {
     setChanges({
@@ -27,9 +30,63 @@ function ExpenseForm({ expense, onSave, disabled, onDelete }) {
     onSave(changes);
   }
 
+  useEffect(() => {
+    let unmounted = false;
+    async function getAccounts() {
+      try {
+        const response = await fetch("/accounts");
+        if (response.ok) {
+          const body = await response.json();
+          if (!unmounted) {
+            setAccounts(
+              body.map(({ id, name, number }) => ({
+                id: id,
+                name: name,
+                number: number,
+              }))
+            );
+
+            setLoading(false);
+
+	    changeField("account_id", formData.account_id || body[0].id);
+          }
+        } else {
+          notifyError("Failed to load accounts. Please try again");
+        }
+      } catch (error) {
+        notifyError(
+          "Failed to load accounts. Please check your internet connection"
+        );
+      }
+    }
+
+    getAccounts();
+
+    return () => {
+      unmounted = true;
+    };
+  }, []);
+
   return (
     <form autoComplete={"off"} onSubmit={handleSubmit} className={styles.form}>
       <fieldset disabled={disabled ? "disabled" : undefined}>
+        <div className={styles.formRow}>
+          <label htmlFor="account">Account</label>
+          <select
+            name="accounts"
+            id={"account_id"}
+            disabled={loading}
+            value={formData.account_id}
+            onChange={(e) => changeField("account_id", e.target.value)}
+          >
+            {accounts.map(({ id, name, number }) => (
+              <option key={number} value={id}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className={styles.formRow}>
           <label htmlFor="amount">Amount</label>
           <input
@@ -86,6 +143,7 @@ const defaultExpenseData = {
   amount: 0,
   date: new Date().toISOString().substr(0, 10),
   description: "",
+  account_id: 0,
 };
 
 function ExpenseEdit() {
@@ -134,6 +192,7 @@ function ExpenseEdit() {
       });
       if (response.ok) {
         setExpense(response.body);
+        history.push("/expenses");
       } else {
         notifyError("Failed to save expense. Please try again");
       }
@@ -142,7 +201,7 @@ function ExpenseEdit() {
         "Failed to save expense. Please check your internet connection"
       );
     } finally {
-      setSaving(false);
+      return () => { setSaving(false) };
     }
   }
 
@@ -162,7 +221,7 @@ function ExpenseEdit() {
         "Failed to delete expense. Please check your internet connection"
       );
     } finally {
-      setDeleting(false);
+      return () => { setDeleting(false) };
     }
   }
 
