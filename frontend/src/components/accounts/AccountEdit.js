@@ -122,16 +122,17 @@ function AccountEdit() {
         body,
       });
       if (response.ok) {
+      	setSaving(false)
         history.push("/accounts");
       } else {
         notifyError("Failed to save account. Please try again");
+      	setSaving(false)
       }
     } catch (error) {
+      setSaving(false)
       notifyError(
         "Failed to save account. Please check your internet connection"
       );
-    } finally {
-      return () => { setSaving(false) };
     }
   }
 
@@ -142,16 +143,17 @@ function AccountEdit() {
         method: "DELETE",
       });
       if (response.ok) {
+      	setDeleting(false)
         history.push("/accounts");
       } else {
+      	setDeleting(false)
         notifyError("Failed to delete account. Please try again");
       }
     } catch (error) {
+      setDeleting(false)
       notifyError(
         "Failed to delete account. Please check your internet connection"
       );
-    } finally {
-      return () => { setDeleting(false) };
     }
   }
 

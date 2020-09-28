@@ -183,6 +183,7 @@ function ExpenseEdit() {
   async function handleSave(changes) {
     try {
       setSaving(true);
+
       const url = expense.id ? `/expenses/${expense.id}` : "/expenses";
       const method = expense.id ? "PATCH" : "POST";
       const body = expense.id ? changes : { ...defaultExpenseData, ...changes };
@@ -192,37 +193,41 @@ function ExpenseEdit() {
       });
       if (response.ok) {
         setExpense(response.body);
+	setSaving(false);
+
         history.push("/expenses");
       } else {
+	setSaving(false);
         notifyError("Failed to save expense. Please try again");
       }
     } catch (error) {
+      setSaving(false);
       notifyError(
         "Failed to save expense. Please check your internet connection"
       );
-    } finally {
-      return () => { setSaving(false) };
     }
   }
 
   async function handleDelete() {
     setDeleting(true);
+
     try {
       const response = await request(`/expenses/${expense.id}`, {
         method: "DELETE",
       });
       if (response.ok) {
+        setDeleting(false) 
         history.push("/expenses");
       } else {
+        setDeleting(false) 
         notifyError("Failed to delete expense. Please try again");
       }
     } catch (error) {
+      setDeleting(false) 
       notifyError(
         "Failed to delete expense. Please check your internet connection"
       );
-    } finally {
-      return () => { setDeleting(false) };
-    }
+    } 
   }
 
   let content;
