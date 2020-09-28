@@ -3,7 +3,7 @@ import { useParams, useHistory } from "react-router-dom";
 import LoadingIndicator from "../LoadingIndicator";
 import ErrorMessage from "../ErrorMessage";
 import request from "../../request";
-import styles from "../ExpenseEdit.module.css";
+import styles from "./AccountEdit.module.css";
 import Button from "../Button";
 import { useNotifications } from "../Notifications";
 

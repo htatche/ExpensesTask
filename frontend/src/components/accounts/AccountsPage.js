@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import LoadingIndicator from "../LoadingIndicator";
 import ErrorMessage from "../ErrorMessage";
 import request from "../../request";
-import styles from "../ExpensesPage.module.css";
+import styles from "./AccountsPage.module.css";
 import Button from "../Button";
 
 function AccountRow({ account }) {
