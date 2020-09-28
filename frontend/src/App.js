@@ -9,6 +9,8 @@ import {
 import styles from "./App.module.css";
 import ExpensesPage from "./components/ExpensesPage";
 import ExpenseEdit from "./components/ExpenseEdit";
+import AccountsPage from "./components/accounts/AccountsPage";
+import AccountEdit from "./components/accounts/AccountEdit";
 import Notifications from "./components/Notifications";
 
 function App() {
@@ -44,6 +46,16 @@ function App() {
               </Route>
               <Route exact path={"/expense/:id"}>
                 <ExpenseEdit />
+              </Route>
+
+              <Route exact path={"/accounts"}>
+                <AccountsPage />
+              </Route>
+              <Route exact path={"/account/new"}>
+                <AccountEdit />
+              </Route>
+              <Route exact path={"/account/:id"}>
+                <AccountEdit />
               </Route>
             </Switch>
           </main>
