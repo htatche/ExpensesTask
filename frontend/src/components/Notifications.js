@@ -1,13 +1,13 @@
 import React, { useContext, createContext, useState, useMemo } from "react";
 import styles from "./Notifications.module.css";
 
-const NotificationContext = createContext({
-  notify: () => {}, // noop
-});
-
 const typeClasses = {
   error: styles.error,
 };
+
+const NotificationContext = createContext({
+  notify: () => {} // noop
+});
 
 function Notification({ type, message, onClose }) {
   return (
@@ -39,9 +39,14 @@ export default function Notifications({ children }) {
 
   const contextValue = useMemo(
     () => ({
-      notify: ({ message, type }) => setNotification({ message, type }),
+      notify: ({ message, type }) => {
+        if(!notification) {
+	  setNotification({ message, type });
+	  setTimeout(() => setNotification(null), 5000);
+	}
+      }
     }),
-    [setNotification]
+    [setNotification, notification]
   );
 
   return (
@@ -55,13 +60,16 @@ export default function Notifications({ children }) {
       )}
       {children}
     </NotificationContext.Provider>
-  );
+  )
 }
 
 function useNotifications() {
   const context = useContext(NotificationContext);
+
   return {
-    notifyError: (message) => context.notify({ type: "error", message }),
+    notifyError: (message) => {
+      context.notify({ type: "error", message });
+    }
   };
 }
 
