@@ -7,7 +7,8 @@ class ExpensesController < ApplicationController
   end
 
   def index
-    render json: Expense.order(date: :desc)
+    expenses = Expense.order(date: :desc)
+    render json: expenses, include: [account: {only: [:name]}]
   end
 
   def show

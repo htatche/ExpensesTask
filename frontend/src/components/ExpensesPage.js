@@ -10,7 +10,7 @@ function ExpenseRow({ expense }) {
   return (
     <li className={styles.item}>
       <Link to={`/expense/${expense.id}`} className={styles.itemInner}>
-        <div className={styles.descriptionText}>{expense.description}</div>
+        <div className={styles.descriptionText}>{expense.description} - {expense.account.name}</div>
         <div className={styles.amountText}>${expense.amount.toFixed(2)}</div>
       </Link>
     </li>

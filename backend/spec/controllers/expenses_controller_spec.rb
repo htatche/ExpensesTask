@@ -6,12 +6,15 @@ RSpec.describe ExpensesController do
     let!(:expense1) { Expense.create(account: account, amount: 100, date: Date.today, description: 'desc') }
     let!(:expense2) { Expense.create(account: account, amount: 100, date: Date.today, description: 'desc') }
 
-    it 'returns the expenses' do
+    it 'returns the expenses with their account names' do
       get :index
 
       body = JSON.parse(response.body)
 
-      expect(body).to contain_exactly(expense1.as_json, expense2.as_json)
+      expect(body).to contain_exactly(
+        expense1.as_json.merge('account' => {'name' => expense1.account.name}),
+        expense2.as_json.merge('account' => {'name' => expense2.account.name})
+      )
     end
   end
 
