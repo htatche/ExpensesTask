@@ -197,8 +197,12 @@ function ExpenseEdit() {
 
         history.push("/expenses");
       } else {
+	notifyError(
+	  Object.entries(response.body).map(function(el) {
+            return `${el[0]}: ${el[1]}`
+          })
+        )
 	setSaving(false);
-        notifyError("Failed to save expense. Please try again");
       }
     } catch (error) {
       setSaving(false);
