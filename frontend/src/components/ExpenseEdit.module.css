@@ -37,3 +37,11 @@ input[type="date"] {
   border: 1px solid #bebebe;
   border-radius: 4px;
 }
+
+select {
+  height: 48px;
+  width: 270px;
+  border: 1px solid #bebebe;
+  border-radius: 4px;
+  background: #fff;
+}
